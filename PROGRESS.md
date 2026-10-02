@@ -213,7 +213,7 @@ Completed:
 - Both full CI runs passed, including the supported-version matrix, PostgreSQL concurrency, data lifecycle, and Kubernetes deployment jobs.
 - CodeQL passed without findings.
 - Dependency review correctly identified five known advisories on `keycloak-server-spi-private:24.0.5`, the `provided` compile baseline that is not bundled in the provider JAR.
-- Added advisory-specific exceptions for those five baseline findings. This avoids weakening the severity threshold globally: any new advisory or vulnerable packaged dependency will continue to fail dependency review.
+- Configured dependency review to report all findings, then added a separate enforcement step that ignores only the three exact Keycloak 24.0.5 `provided` package URLs. Any vulnerable dependency outside that compile-only baseline continues to fail the workflow.
 
 Next:
 

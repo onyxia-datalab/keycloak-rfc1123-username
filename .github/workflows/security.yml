@@ -55,15 +55,28 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Review dependency changes
+        id: dependency-review
         uses: actions/dependency-review-action@v5
         with:
           # Keycloak 24.0.5 is the binary-compatibility compile baseline. These
           # dependencies have provided scope and are not packaged in the provider
           # JAR. Runtime Keycloak security remains the server operator's concern.
-          # Keep this list advisory-specific so every new finding still fails CI.
-          allow-ghsas: >-
-            GHSA-x4p7-7chp-64hq,
-            GHSA-v4jw-m6rm-399h,
-            GHSA-q35r-vvhv-vx5h,
-            GHSA-rr5q-3xwr-f323,
-            GHSA-4q93-v92x-p89f
+          warn-only: true
+
+      - name: Reject vulnerabilities outside the provided Keycloak baseline
+        env:
+          VULNERABLE_CHANGES: ${{ steps.dependency-review.outputs.vulnerable-changes }}
+        run: |
+          unexpected=$(jq -c '[
+            .[]
+            | select(
+                .package_url != "pkg:maven/org.keycloak/keycloak-server-spi-private@24.0.5"
+                and .package_url != "pkg:maven/org.keycloak/keycloak-services@24.0.5"
+                and .package_url != "pkg:maven/org.keycloak/keycloak-model-jpa@24.0.5"
+              )
+          ]' <<<"$VULNERABLE_CHANGES")
+          if [[ $(jq 'length' <<<"$unexpected") -ne 0 ]]; then
+            printf '%s\n' 'Dependency review found unexpected vulnerable packages:' >&2
+            jq -r '.[].package_url' <<<"$unexpected" >&2
+            exit 1
+          fi
