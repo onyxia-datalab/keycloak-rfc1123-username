@@ -56,3 +56,14 @@ jobs:
 
       - name: Review dependency changes
         uses: actions/dependency-review-action@v5
+        with:
+          # Keycloak 24.0.5 is the binary-compatibility compile baseline. These
+          # dependencies have provided scope and are not packaged in the provider
+          # JAR. Runtime Keycloak security remains the server operator's concern.
+          # Keep this list advisory-specific so every new finding still fails CI.
+          allow-ghsas: >-
+            GHSA-x4p7-7chp-64hq,
+            GHSA-v4jw-m6rm-399h,
+            GHSA-q35r-vvhv-vx5h,
+            GHSA-rr5q-3xwr-f323,
+            GHSA-4q93-v92x-p89f

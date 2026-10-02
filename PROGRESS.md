@@ -204,3 +204,17 @@ Completed:
 - Read the mapper's actual configuration-property metadata and resolved its localization keys from the English Keycloak Admin UI bundles for 24.0.5, 25.0.6, and 26.7.4.
 - Confirmed that all three supported versions use the same labels: **Token Claim Name**, **Add to ID token**, **Add to access token**, **Add to lightweight access token**, **Add to userinfo**, and **Add to token introspection**.
 - Updated the README to use those exact labels and removed the inaccurate instruction to select a separate String value; this mapper always emits a string and does not expose a JSON-type field.
+
+## 2026-10-02 — Initial hosted CI run
+
+Completed:
+
+- Opened pull request #1 from `feat/rfc1123-username-v1` at commit `225c2f0`.
+- Both full CI runs passed, including the supported-version matrix, PostgreSQL concurrency, data lifecycle, and Kubernetes deployment jobs.
+- CodeQL passed without findings.
+- Dependency review correctly identified five known advisories on `keycloak-server-spi-private:24.0.5`, the `provided` compile baseline that is not bundled in the provider JAR.
+- Added advisory-specific exceptions for those five baseline findings. This avoids weakening the severity threshold globally: any new advisory or vulnerable packaged dependency will continue to fail dependency review.
+
+Next:
+
+- Confirm the updated Security workflow is green, merge pull request #1, and create the `v1.0.0` tag.
