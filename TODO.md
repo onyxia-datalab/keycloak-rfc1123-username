@@ -67,10 +67,10 @@
 
 - [x] Add formatting, compilation, test, and dependency/security checks to CI.
 - [x] Build and test the extension against every supported Keycloak version.
-- [ ] Produce a versioned JAR named `keycloak-rfc1123-username.jar`.
+- [x] Produce a versioned JAR named `keycloak-rfc1123-username.jar`.
 - [x] Add release automation that publishes the JAR and its checksum to a GitHub release.
 - [x] Generate provenance or a software bill of materials if required by the deployment environment.
-- [ ] Confirm the published `v1.0.0` URL used in the README.
+- [x] Confirm the published `v1.0.0` URL used in the README.
 
 ## 8. Validate the deployment documentation
 
@@ -80,7 +80,7 @@
 - [x] Capture the exact Admin Console labels for the supported Keycloak version and update the README if they differ.
 - [x] Configure the mapper on a test `onyxia` client with the claim name `onyxia-username`.
 - [x] Obtain test Onyxia tokens and verify that `onyxia-username` is a valid RFC1123 identifier.
-- [ ] Remove the README status warning only after the implementation, release artifact, and documented deployment have been verified.
+- [x] Remove the README status warning only after the implementation, release artifact, and documented deployment have been verified.
 
 ## Definition of done for v1.0.0
 
@@ -90,5 +90,5 @@
 - [x] Collisions retain a readable base and receive predictable numeric suffixes.
 - [x] The mapper can target a configurable string claim in the selected token types.
 - [x] The extension is covered by unit and integration tests and works on every documented Keycloak version.
-- [ ] A reproducible `v1.0.0` release and checksum are available at the URL documented in the README.
+- [x] A reproducible `v1.0.0` release and checksum are available at the URL documented in the README.
 - [x] The mapper is validated on a test Onyxia client with the `onyxia-username` claim.

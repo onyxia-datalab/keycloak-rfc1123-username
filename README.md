@@ -4,8 +4,6 @@ A Keycloak protocol mapper that generates a stable, unique, human-readable RFC11
 
 Useful when applications need a readable username suitable for Kubernetes resource names, without depending on a mutable login name or email address.
 
-> **Status:** The implementation and integration suites are in development. A `v1.0.0` artifact has not been published yet, so the release URL below is not available for deployment.
-
 The project produces one Java 17 provider JAR for Keycloak 24.x through 26.x. The compatibility suite currently tests the same baseline-built artifact on Keycloak 24.0.5, 25.0.6, and 26.7.4, including concurrent allocation by two Keycloak nodes sharing PostgreSQL.
 
 ## How it works
@@ -23,7 +21,7 @@ The mapper adds a claim; it does not change the user's Keycloak username or repl
 
 ## Install in Keycloak
 
-Once the release artifact is available, download it into the Keycloak `providers` directory:
+Download the `v1.0.0` release artifact into the Keycloak `providers` directory:
 
 ```sh
 curl -fSL \

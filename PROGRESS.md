@@ -168,7 +168,7 @@ Implemented:
 
 Verification:
 
-- Two clean `1.0.0` builds produced identical JAR SHA-256 digests (`d3c0658d95ffa4017c7c01d1ace84419020f53e442b21306db2575f56401ddda`) and identical SBOM digests (`0cd9c4a3de1cb11ba39727f2e31fe949ba773e442524e359e60c69f5bb66f987`).
+- At this checkpoint, two clean `1.0.0` builds produced identical JAR and SBOM digests; the final tagged release digest is recorded below.
 - The release JAR manifest reports `Implementation-Version: 1.0.0`, retains Java 17 bytecode, and passes the artifact verifier.
 - All workflow files parse as YAML, all shell scripts pass `bash -n`, and the worktree passes `git diff --check`.
 
@@ -218,3 +218,25 @@ Completed:
 Next:
 
 - Confirm the updated Security workflow is green, merge pull request #1, and create the `v1.0.0` tag.
+
+## 2026-10-02 — v1.0.0 release
+
+Completed:
+
+- Confirmed all 15 pull-request checks succeeded, including CodeQL, dependency review, the full Keycloak compatibility matrix, data lifecycle, multi-node concurrency, and Kubernetes deployment validation.
+- Squash-merged pull request #1 to `main` as commit `4bf63f5ac9375bffb418ceac89e5b8216a22ff04`.
+- Created and pushed the annotated `v1.0.0` tag on that exact commit.
+- Published `keycloak-rfc1123-username.jar`, its SHA-256 checksum, the CycloneDX JSON SBOM, and its checksum to the GitHub release.
+- Confirmed the README download URL resolves to the published JAR and removed the development status warning.
+- Marked every v1.0.0 roadmap and definition-of-done item complete.
+
+Verification:
+
+- Both published checksum files validate successfully.
+- A clean Java 21 build from the exact `v1.0.0` tag reproduces the published JAR digest `2eed3c4e3c30ddaf49f2232bdcd9eb474e381f444ccd2274cfdceedb6b6eded7` and SBOM digest `0cd9c4a3de1cb11ba39727f2e31fe949ba773e442524e359e60c69f5bb66f987` byte for byte.
+- `scripts/verify-artifact.sh` confirms Java 17 bytecode and all required provider metadata in the released JAR.
+- GitHub CLI attestation verification confirms the published JAR and SBOM digests were signed for `onyxia-datalab/keycloak-rfc1123-username`, with a verified Rekor transparency-log timestamp.
+
+Release:
+
+- https://github.com/onyxia-datalab/keycloak-rfc1123-username/releases/tag/v1.0.0
