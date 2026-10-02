@@ -1,0 +1,82 @@
+name: Security
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java-kotlin
+          build-mode: manual
+
+      - name: Build analyzed sources
+        run: mvn --batch-mode --no-transfer-progress clean package -DskipTests
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v4
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Review dependency changes
+        id: dependency-review
+        uses: actions/dependency-review-action@v5
+        with:
+          # Keycloak 24.0.5 is the binary-compatibility compile baseline. These
+          # dependencies have provided scope and are not packaged in the provider
+          # JAR. Runtime Keycloak security remains the server operator's concern.
+          warn-only: true
+
+      - name: Reject vulnerabilities outside the provided Keycloak baseline
+        env:
+          VULNERABLE_CHANGES: ${{ steps.dependency-review.outputs.vulnerable-changes }}
+        run: |
+          unexpected=$(jq -c '[
+            .[]
+            | select(
+                .package_url != "pkg:maven/org.keycloak/keycloak-server-spi-private@24.0.5"
+                and .package_url != "pkg:maven/org.keycloak/keycloak-services@24.0.5"
+                and .package_url != "pkg:maven/org.keycloak/keycloak-model-jpa@24.0.5"
+              )
+          ]' <<<"$VULNERABLE_CHANGES")
+          if [[ $(jq 'length' <<<"$unexpected") -ne 0 ]]; then
+            printf '%s\n' 'Dependency review found unexpected vulnerable packages:' >&2
+            jq -r '.[].package_url' <<<"$unexpected" >&2
+            exit 1
+          fi

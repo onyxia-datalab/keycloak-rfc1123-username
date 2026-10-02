@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+        logicalFilePath="META-INF/rfc1123-username-changelog.xml">
+
+    <changeSet id="1.0.0-create-username-assignment" author="onyxia-datalab">
+        <createTable tableName="RFC1123_USERNAME_ASSIGNMENT">
+            <column name="ID" type="VARCHAR(36)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_RFC1123_USERNAME_ASSIGNMENT"/>
+            </column>
+            <column name="REALM_ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_ID" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IDENTIFIER" type="VARCHAR(63)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_AT" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="RFC1123_USERNAME_ASSIGNMENT"
+                columnNames="REALM_ID, USER_ID"
+                constraintName="UK_RFC1123_REALM_USER"/>
+        <addUniqueConstraint
+                tableName="RFC1123_USERNAME_ASSIGNMENT"
+                columnNames="REALM_ID, IDENTIFIER"
+                constraintName="UK_RFC1123_REALM_IDENTIFIER"/>
+
+        <rollback>
+            <dropTable tableName="RFC1123_USERNAME_ASSIGNMENT"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
